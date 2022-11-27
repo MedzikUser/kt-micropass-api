@@ -15,7 +15,7 @@
                 </repository>
                 <repository>
                     <id>github</id>
-                    <url>https://maven.pkg.github.com/owner_username/package_name</url>
+                    <url>https://maven.pkg.github.com/MedzikUser/libcrypto-java</url>
                     <snapshots>
                         <enabled>true</enabled>
                     </snapshots>
