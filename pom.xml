@@ -28,7 +28,7 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>medzik</id>
+            <id>github</id>
             <name>Medzik</name>
             <url>https://maven.pkg.github.com/MedzikUser/libcrypto-java</url>
         </repository>
