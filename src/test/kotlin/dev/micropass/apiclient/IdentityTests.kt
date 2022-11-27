@@ -1,6 +1,6 @@
 package dev.micropass.apiclient
 
-import com.github.javafaker.Faker
+import io.github.serpro69.kfaker.Faker
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test
 class IdentityTests {
     companion object {
         @JvmStatic
-        private val email = Faker().internet().emailAddress()
+        private val email = Faker().internet.email()
         @JvmStatic
-        private val password = Faker().internet().password()
+        private val password = Faker().random.randomString(10)
 
         @JvmStatic
         lateinit var accessToken: String

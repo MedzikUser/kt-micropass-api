@@ -1,10 +1,9 @@
 package dev.micropass.apiclient
 
+import com.google.gson.Gson
 import dev.medzik.libcrypto.AesCbc
 import dev.medzik.libcrypto.Pbkdf2
 import dev.medzik.libcrypto.Salt
-import org.json.simple.JSONObject
-import org.json.simple.JSONValue
 
 class Identity {
     private val client = Client()
@@ -24,13 +23,13 @@ class Identity {
         val encryptionKey = Pbkdf2(1).sha256(passwordHash, Salt().generate(32))
         val encryptionKeyFinal = AesCbc.encrypt(encryptionKey, passwordHash)
 
-        val body = JSONObject()
+        val body = HashMap<String, String>()
         body["email"] = email
         body["password"] = passwordHashFinal
         body["encryptionKey"] = encryptionKeyFinal
         if (passwordHint != null) body["passwordHint"] = passwordHint
 
-        client.post("${client.url}/identity/register", body.toJSONString())
+        client.post("${client.url}/identity/register", Gson().toJson(body))
     }
 
     /**
@@ -43,15 +42,15 @@ class Identity {
         val passwordHash = Pbkdf2(iterations).sha256(password, email.toByteArray())
         val passwordHashFinal = Pbkdf2(1).sha512(passwordHash, email.toByteArray())
 
-        val body = JSONObject()
+        val body = HashMap<String, String>()
         body["grant_type"] = "password"
         body["email"] = email
         body["password"] = passwordHashFinal
 
-        val resBody = client.post("${client.url}/identity/token", body.toJSONString())
-        val res = JSONValue.parse(resBody) as JSONObject
+        val resBody = client.post("${client.url}/identity/token", Gson().toJson(body))
+        val res = Gson().fromJson(resBody, HashMap::class.java)
 
-        return AuthResponse(res["access_token"] as String, res["refresh_token"] as String)
+        return AuthResponse(res["access_token"] as String, res["refresh_token"] as String?)
     }
 
     /**
@@ -60,12 +59,12 @@ class Identity {
      * @return [AuthResponse] containing the access token.
      */
     fun refreshToken(refreshToken: String): AuthResponse {
-        val body = JSONObject()
+        val body = HashMap<String, String>()
         body["grant_type"] = "refresh_token"
         body["refresh_token"] = refreshToken
 
-        val resBody = client.post("${client.url}/identity/token", body.toJSONString())
-        val res = JSONValue.parse(resBody) as JSONObject
+        val resBody = client.post("${client.url}/identity/token", Gson().toJson(body))
+        val res = Gson().fromJson(resBody, HashMap::class.java)
 
         return AuthResponse(res["access_token"] as String, res["refresh_token"] as String?)
     }

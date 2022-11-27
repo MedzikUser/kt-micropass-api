@@ -22,6 +22,16 @@
             <id>mavenCentral</id>
             <url>https://repo1.maven.org/maven2/</url>
         </repository>
+        <repository>
+            <id>sonatype-snapshot</id>
+            <name>Sonatype Snapshot</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>medzik</id>
+            <name>Medzik</name>
+            <url>https://maven.pkg.github.com/MedzikUser/libcrypto-java</url>
+        </repository>
     </repositories>
 
     <build>
@@ -104,15 +114,15 @@
             <version>0.1.0</version>
         </dependency>
         <dependency>
-            <groupId>com.googlecode.json-simple</groupId>
-            <artifactId>json-simple</artifactId>
-            <version>1.1.1</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10</version>
         </dependency>
 
         <dependency>
-            <groupId>com.github.javafaker</groupId>
-            <artifactId>javafaker</artifactId>
-            <version>1.0.2</version>
+            <groupId>io.github.serpro69</groupId>
+            <artifactId>kotlin-faker</artifactId>
+            <version>1.12.0</version>
         </dependency>
     </dependencies>
 </project>
