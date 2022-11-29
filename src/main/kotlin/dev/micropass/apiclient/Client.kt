@@ -1,47 +1,22 @@
 package dev.micropass.apiclient
 
 import com.google.gson.Gson
-import java.lang.RuntimeException
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
-class Client(val accessToken: String?) {
-    val apiURL = "https://micropass-api.medzik.xyz"
+class Client(private val accessToken: String?) {
+    private val apiURL = "https://micropass-api.medzik.xyz"
 
     private val client = HttpClient.newBuilder().build()
 
     fun get(url: String): String {
-        var request = HttpRequest.newBuilder()
-                .uri(URI.create(apiURL+url))
-
-        if (accessToken != null) {
-            request = request.header("Authorization", "Bearer $accessToken")
-        }
-
-        try {
-            return client.send(request.build(), HttpResponse.BodyHandlers.ofString()).body()
-        } catch (e: Exception) {
-            throw RuntimeException(e)
-        }
+        return send("GET", url, HttpRequest.BodyPublishers.noBody())
     }
 
     fun post(url: String, body: String): String {
-        var request = HttpRequest.newBuilder()
-                .uri(URI.create(apiURL+url))
-                .POST(HttpRequest.BodyPublishers.ofString(body))
-                .header("Content-Type", "application/json")
-
-        if (accessToken != null) {
-            request = request.header("Authorization", "Bearer $accessToken")
-        }
-
-        try {
-            return client.send(request.build(), HttpResponse.BodyHandlers.ofString()).body()
-        } catch (e: Exception) {
-            throw RuntimeException(e)
-        }
+        return send("POST", url, HttpRequest.BodyPublishers.ofString(body))
     }
 
     fun post(url: String, body: HashMap<*, *>): String {
@@ -49,20 +24,7 @@ class Client(val accessToken: String?) {
     }
 
     fun patch(url: String, body: String): String {
-        var request = HttpRequest.newBuilder()
-            .uri(URI.create(apiURL+url))
-            .method("PATCH", HttpRequest.BodyPublishers.ofString(body))
-            .header("Content-Type", "application/json")
-
-        if (accessToken != null) {
-            request = request.header("Authorization", "Bearer $accessToken")
-        }
-
-        try {
-            return client.send(request.build(), HttpResponse.BodyHandlers.ofString()).body()
-        } catch (e: Exception) {
-            throw RuntimeException(e)
-        }
+        return send("PATCH", url, HttpRequest.BodyPublishers.ofString(body))
     }
 
     fun patch(url: String, body: HashMap<*, *>): String {
@@ -70,16 +32,20 @@ class Client(val accessToken: String?) {
     }
 
     fun delete(url: String): String {
-        var request = HttpRequest.newBuilder().method("DELETE", HttpRequest.BodyPublishers.noBody()).uri(URI.create(apiURL+url))
+        return send("DELETE", url, HttpRequest.BodyPublishers.noBody())
+    }
+
+    private fun send(method: String, url: String, body: HttpRequest.BodyPublisher): String {
+        var req = HttpRequest.newBuilder().uri(URI.create(apiURL+url)).method(method, body)
+
+        if (body != HttpRequest.BodyPublishers.noBody()) {
+            req = req.header("Content-Type", "application/json")
+        }
 
         if (accessToken != null) {
-            request = request.header("Authorization", "Bearer $accessToken")
+            req = req.header("Authorization", "Bearer $accessToken")
         }
 
-        try {
-            return client.send(request.build(), HttpResponse.BodyHandlers.ofString()).body()
-        } catch (e: Exception) {
-            throw RuntimeException(e)
-        }
+        return client.send(req.build(), HttpResponse.BodyHandlers.ofString()).body()
     }
 }
