@@ -5,8 +5,8 @@ import dev.medzik.libcrypto.AesCbc
 import dev.medzik.libcrypto.Pbkdf2
 import dev.medzik.libcrypto.Salt
 
-class Identity {
-    private val client = Client()
+class IdentityApi {
+    private val client = Client(null)
 
     private val iterations = 100000
 
@@ -26,11 +26,13 @@ class Identity {
         val body = HashMap<String, String>()
         body["email"] = email
         body["password"] = passwordHashFinal
-        body["encryptionKey"] = encryptionKeyFinal
+        body["encryption_key"] = encryptionKeyFinal
         if (passwordHint != null) body["passwordHint"] = passwordHint
 
         client.post("${client.url}/identity/register", Gson().toJson(body))
     }
+
+    data class AuthResponse(val accessToken: String, val refreshToken: String?)
 
     /**
      * Login to an account.
@@ -69,5 +71,3 @@ class Identity {
         return AuthResponse(res["access_token"] as String, res["refresh_token"] as String?)
     }
 }
-
-data class AuthResponse(val accessToken: String, val refreshToken: String?)
