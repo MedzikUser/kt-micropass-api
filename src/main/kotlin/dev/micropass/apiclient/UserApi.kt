@@ -14,7 +14,7 @@ class UserApi(accessToken: String) {
      * @return The user encryption key.
      */
     fun encryptionKey(password: String, email: String): String {
-        val resBody = client.get("${client.url}/user/encryption_key")
+        val resBody = client.get("/user/encryption_key")
         val res = Gson().fromJson(resBody, HashMap::class.java)
 
         val secretKey = Pbkdf2(100000).sha256(password, email.toByteArray())
@@ -29,7 +29,7 @@ class UserApi(accessToken: String) {
      * @return [WhoamiResponse], the user information.
      */
     fun whoami(): WhoamiResponse {
-        val res = client.get("${client.url}/user/whoami")
+        val res = client.get("/user/whoami")
 
         return Gson().fromJson(res, WhoamiResponse::class.java)
     }

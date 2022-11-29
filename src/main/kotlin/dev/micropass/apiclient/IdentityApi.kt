@@ -29,7 +29,7 @@ class IdentityApi {
         body["encryption_key"] = encryptionKeyFinal
         if (passwordHint != null) body["passwordHint"] = passwordHint
 
-        client.post("${client.url}/identity/register", Gson().toJson(body))
+        client.post("/identity/register", Gson().toJson(body))
     }
 
     data class AuthResponse(val accessToken: String, val refreshToken: String?)
@@ -49,7 +49,7 @@ class IdentityApi {
         body["email"] = email
         body["password"] = passwordHashFinal
 
-        val resBody = client.post("${client.url}/identity/token", Gson().toJson(body))
+        val resBody = client.post("/identity/token", Gson().toJson(body))
         val res = Gson().fromJson(resBody, HashMap::class.java)
 
         return AuthResponse(res["access_token"] as String, res["refresh_token"] as String?)
@@ -65,7 +65,7 @@ class IdentityApi {
         body["grant_type"] = "refresh_token"
         body["refresh_token"] = refreshToken
 
-        val resBody = client.post("${client.url}/identity/token", Gson().toJson(body))
+        val resBody = client.post("/identity/token", Gson().toJson(body))
         val res = Gson().fromJson(resBody, HashMap::class.java)
 
         return AuthResponse(res["access_token"] as String, res["refresh_token"] as String?)

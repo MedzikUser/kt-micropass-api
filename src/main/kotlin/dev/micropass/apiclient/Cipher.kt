@@ -8,12 +8,12 @@ import dev.medzik.libcrypto.AesCbc
  * The Cipher class represents a cipher in the database.
  */
 data class Cipher(
-    @SerializedName("id") val id: String,
-    @SerializedName("favorite") val favorite: Boolean,
-    @SerializedName("dir") val directory: String,
-    @SerializedName("data") val data: CipherData,
-    @SerializedName("createdAt") val createdAt: String = "0",
-    @SerializedName("updatedAt") val updatedAt: String = "0"
+    @SerializedName("id") val id: String = "",
+    @SerializedName("favorite") var favorite: Boolean = false,
+    @SerializedName("dir") var directory: String? = null,
+    @SerializedName("data") var data: CipherData,
+    @SerializedName("created") val createdAt: String? = "0",
+    @SerializedName("updated") val updatedAt: String? = "0"
 ) {
     companion object {
         /**
@@ -32,8 +32,26 @@ data class Cipher(
          * @return The cipher.
          */
         fun of(encryptedJson: String, encryptionKey: String): Cipher {
-            val clearJson = AesCbc.decrypt(encryptedJson, encryptionKey)
-            return of(clearJson)
+            val cipher = Gson().fromJson(encryptedJson, EncryptedCipher::class.java)
+            return Cipher(
+                id = cipher.id,
+                favorite = cipher.favorite,
+                directory = cipher.directory,
+                data = CipherData.of(AesCbc.decrypt(cipher.data, encryptionKey)),
+                createdAt = cipher.createdAt,
+                updatedAt = cipher.updatedAt
+            )
+        }
+
+        fun of(encryptedCipher: EncryptedCipher, encryptionKey: String): Cipher {
+            return Cipher(
+                id = encryptedCipher.id,
+                favorite = encryptedCipher.favorite,
+                directory = encryptedCipher.directory,
+                data = CipherData.of(encryptedCipher.data, encryptionKey),
+                createdAt = encryptedCipher.createdAt,
+                updatedAt = encryptedCipher.updatedAt
+            )
         }
     }
 
@@ -51,44 +69,96 @@ data class Cipher(
      * @return The JSON string.
      */
     fun toJson(encryptionKey: String): String {
-        val json = toJson()
-        return AesCbc.encrypt(json, encryptionKey)
+        val encryptedCipher = EncryptedCipher(
+            id = id,
+            favorite = favorite,
+            directory = directory,
+            data = AesCbc.encrypt(data.toJson(), encryptionKey),
+            createdAt = createdAt,
+            updatedAt = updatedAt
+        )
+
+        return Gson().toJson(encryptedCipher)
     }
-}
 
-/**
- * The CipherData class represents the data of a cipher.
- */
-data class CipherData(
-    @SerializedName("type") val type: CipherType,
-    @SerializedName("name") val name: String,
-    @SerializedName("note") val note: String?,
-    @SerializedName("fields") val fields: HashMap<String, CipherField>
-)
+    /**
+     * The CipherData class represents the data of a cipher.
+     */
+    data class CipherData(
+        @SerializedName("type") var type: Number,
+        @SerializedName("name") var name: String,
+        @SerializedName("note") var note: String? = null,
+        @SerializedName("fields") var fields: HashMap<String, CipherField>
+    ) {
+        companion object {
+            /**
+             * Deserialize a cipher data from a JSON string.
+             * @param clearJson The JSON string to deserialize.
+             * @return The cipher.
+             */
+            fun of(clearJson: String): CipherData {
+                return Gson().fromJson(clearJson, CipherData::class.java)
+            }
 
-/**
- * The CipherField class represents a field of a cipher.
- */
-data class CipherField(
-    @SerializedName("typ") val type: CipherFieldTypes,
-    @SerializedName("val") val value: String
-)
+            /**
+             * Deserialize a cipher data from an encrypted JSON string.
+             * @param encryptedJson The JSON string to deserialize.
+             * @param encryptionKey The encryption key to use.
+             * @return The cipher.
+             */
+            fun of(encryptedJson: String, encryptionKey: String): CipherData {
+                val clearJson = AesCbc.decrypt(encryptedJson, encryptionKey)
+                return Gson().fromJson(encryptedJson, CipherData::class.java)
+            }
+        }
 
-/**
- * The CipherType enum represents the type of cipher.
- */
-enum class CipherType(val type: Number) {
-    Login(1),
-    SecureNote(2),
-    Card(3),
-    Identity(4)
-}
+        /**
+         * Serialize the cipher data to a JSON string.
+         * @return The JSON string.
+         */
+        fun toJson(): String {
+            return Gson().toJson(this)
+        }
 
-/**
- * The CipherFieldTypes enum represents the type of field of a cipher.
- */
-enum class CipherFieldTypes(val type: Number) {
-    Default(-1),
-    Text(0),
-    Hidden(1),
+        /**
+         * Serialize the cipher data to an encrypted JSON string.
+         * @param encryptionKey The encryption key to use.
+         * @return The JSON string.
+         */
+        fun toJson(encryptionKey: String): String {
+            val json = toJson()
+            return AesCbc.encrypt(json, encryptionKey)
+        }
+    }
+
+    /**
+     * The CipherField class represents a field of a cipher.
+     */
+    data class CipherField(
+        @SerializedName("typ") val type: Number,
+        @SerializedName("val") val value: String
+    )
+
+    /**
+     * The CipherType represents the type of cipher.
+     */
+    class CipherType {
+        companion object {
+            const val Login = 1
+            const val SecureNote = 2
+            const val Card = 3
+            const val Identity = 4
+        }
+    }
+
+    /**
+     * The FieldType represents the type of field of a cipher.
+     */
+    class FieldType {
+        companion object {
+            const val Default = -1
+            const val Text = 0
+            const val Hidden = 1
+        }
+    }
 }
