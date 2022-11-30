@@ -15,7 +15,9 @@ class IdentityApi {
      * @param email The email address of the account.
      * @param password The password of the account.
      * @param passwordHint The password hint.
+     * @throws Exception If the request fails.
      */
+    @Throws(Exception::class)
     fun register(email: String, password: String, passwordHint: String?) {
         val passwordHash = Pbkdf2(iterations).sha256(password, email.toByteArray())
         val passwordHashFinal = Pbkdf2(1).sha512(passwordHash, email.toByteArray())
@@ -39,7 +41,9 @@ class IdentityApi {
      * @param email The email address of the account.
      * @param password The password of the account.
      * @return [AuthResponse] containing the access and refresh token.
+     * @throws Exception If the request fails.
      */
+    @Throws(Exception::class)
     fun login(email: String, password: String): AuthResponse {
         val passwordHash = Pbkdf2(iterations).sha256(password, email.toByteArray())
         val passwordHashFinal = Pbkdf2(1).sha512(passwordHash, email.toByteArray())
@@ -59,7 +63,9 @@ class IdentityApi {
      * Refresh the authentication token.
      * @param refreshToken The refresh token.
      * @return [AuthResponse] containing the access token.
+     * @throws Exception If the request fails.
      */
+    @Throws(Exception::class)
     fun refreshToken(refreshToken: String): AuthResponse {
         val body = HashMap<String, String>()
         body["grant_type"] = "refresh_token"

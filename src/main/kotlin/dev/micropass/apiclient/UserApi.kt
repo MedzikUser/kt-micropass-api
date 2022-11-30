@@ -12,7 +12,9 @@ class UserApi(accessToken: String) {
      * @param password The password of the user.
      * @param email The email address of the user.
      * @return The user encryption key.
+     * @throws Exception If the request fails.
      */
+    @Throws(Exception::class)
     fun encryptionKey(password: String, email: String): String {
         val resBody = client.get("/user/encryption_key")
         val res = Gson().fromJson(resBody, HashMap::class.java)
@@ -27,7 +29,9 @@ class UserApi(accessToken: String) {
     /**
      * Get information about the current user.
      * @return [WhoamiResponse], the user information.
+     * @throws Exception If the request fails.
      */
+    @Throws(Exception::class)
     fun whoami(): WhoamiResponse {
         val res = client.get("/user/whoami")
 

@@ -1,8 +1,10 @@
 package dev.micropass.apiclient
 
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.google.gson.annotations.SerializedName
 import dev.medzik.libcrypto.AesCbc
+import dev.medzik.libcrypto.EncryptException
 
 /**
  * The Cipher class represents a cipher in the database.
@@ -20,7 +22,9 @@ data class Cipher(
          * Deserialize a cipher from a JSON string.
          * @param clearJson The JSON string to deserialize.
          * @return The cipher.
+         * @throws JsonSyntaxException If the JSON string is invalid.
          */
+        @Throws(JsonSyntaxException::class)
         fun of(clearJson: String): Cipher {
             return Gson().fromJson(clearJson, Cipher::class.java)
         }
@@ -30,7 +34,10 @@ data class Cipher(
          * @param encryptedJson The JSON string to deserialize.
          * @param encryptionKey The encryption key to use.
          * @return The cipher.
+         * @throws EncryptException If fails to decrypt the JSON.
+         * @throws JsonSyntaxException If the JSON string is invalid.
          */
+        @Throws(EncryptException::class, JsonSyntaxException::class)
         fun of(encryptedJson: String, encryptionKey: String): Cipher {
             val cipher = Gson().fromJson(encryptedJson, EncryptedCipher::class.java)
             return Cipher(
@@ -43,14 +50,23 @@ data class Cipher(
             )
         }
 
-        fun of(encryptedCipher: EncryptedCipher, encryptionKey: String): Cipher {
+        /**
+         * Deserialize a cipher from an encrypted cipher.
+         * @param cipher The encrypted cipher to deserialize.
+         * @param encryptionKey The encryption key to use.
+         * @return The cipher.
+         * @throws EncryptException If fails to decrypt the JSON.
+         * @throws JsonSyntaxException If the JSON string is invalid.
+         */
+        @Throws(EncryptException::class, JsonSyntaxException::class)
+        fun of(cipher: EncryptedCipher, encryptionKey: String): Cipher {
             return Cipher(
-                id = encryptedCipher.id,
-                favorite = encryptedCipher.favorite,
-                directory = encryptedCipher.directory,
-                data = CipherData.of(encryptedCipher.data, encryptionKey),
-                createdAt = encryptedCipher.createdAt,
-                updatedAt = encryptedCipher.updatedAt
+                id = cipher.id,
+                favorite = cipher.favorite,
+                directory = cipher.directory,
+                data = CipherData.of(cipher.data, encryptionKey),
+                createdAt = cipher.createdAt,
+                updatedAt = cipher.updatedAt
             )
         }
     }
@@ -67,7 +83,9 @@ data class Cipher(
      * Serialize the cipher to an encrypted JSON string.
      * @param encryptionKey The encryption key to use.
      * @return The JSON string.
+     * @throws EncryptException If fails to encrypt the JSON.
      */
+    @Throws(EncryptException::class)
     fun toJson(encryptionKey: String): String {
         val encryptedCipher = EncryptedCipher(
             id = id,
@@ -95,7 +113,9 @@ data class Cipher(
              * Deserialize a cipher data from a JSON string.
              * @param clearJson The JSON string to deserialize.
              * @return The cipher.
+             * @throws JsonSyntaxException If the JSON string is invalid.
              */
+            @Throws(JsonSyntaxException::class)
             fun of(clearJson: String): CipherData {
                 return Gson().fromJson(clearJson, CipherData::class.java)
             }
@@ -105,10 +125,13 @@ data class Cipher(
              * @param encryptedJson The JSON string to deserialize.
              * @param encryptionKey The encryption key to use.
              * @return The cipher.
+             * @throws EncryptException If fails to decrypt the JSON.
+             * @throws JsonSyntaxException If the JSON string is invalid.
              */
+            @Throws(EncryptException::class, JsonSyntaxException::class)
             fun of(encryptedJson: String, encryptionKey: String): CipherData {
                 val clearJson = AesCbc.decrypt(encryptedJson, encryptionKey)
-                return Gson().fromJson(encryptedJson, CipherData::class.java)
+                return Gson().fromJson(clearJson, CipherData::class.java)
             }
         }
 
@@ -124,7 +147,9 @@ data class Cipher(
          * Serialize the cipher data to an encrypted JSON string.
          * @param encryptionKey The encryption key to use.
          * @return The JSON string.
+         * @throws EncryptException If fails to encrypt the JSON.
          */
+        @Throws(EncryptException::class)
         fun toJson(encryptionKey: String): String {
             val json = toJson()
             return AesCbc.encrypt(json, encryptionKey)
