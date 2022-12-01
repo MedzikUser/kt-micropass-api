@@ -16,6 +16,8 @@ data class EncryptedCipher(
          * Create an encrypted cipher from a cipher.
          * @param cipher The cipher to encrypt.
          * @param encryptionKey The encryption key to use.
+         * @return The encrypted cipher.
+         * @throws EncryptException If the cipher could not be encrypted.
          */
         @Throws(EncryptException::class)
         fun of(cipher: Cipher, encryptionKey: String): EncryptedCipher {
@@ -30,6 +32,13 @@ data class EncryptedCipher(
         }
     }
 
+    /**
+     * Convert this encrypted cipher to a cipher.
+     * @param encryptionKey The encryption key to use.
+     * @return The decrypted cipher.
+     * @throws EncryptException If the cipher could not be decrypted.
+     */
+    @Throws(EncryptException::class)
     fun toCipher(encryptionKey: String): Cipher {
         return Cipher(
             id = id,
