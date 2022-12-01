@@ -57,6 +57,9 @@ class CipherTests {
         val b = Cipher.of(cipherJsonEnc, encryptionKey)
 
         assertEquals(a, b)
+
+        val encCipher = EncryptedCipher.of(a, encryptionKey)
+        Cipher.of(encCipher, encryptionKey)
     }
 
     @Test

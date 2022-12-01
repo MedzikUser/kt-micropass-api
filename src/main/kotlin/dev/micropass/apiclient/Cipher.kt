@@ -52,22 +52,15 @@ data class Cipher(
 
         /**
          * Deserialize a cipher from an encrypted cipher.
-         * @param cipher The encrypted cipher to deserialize.
+         * @param encCipher The encrypted cipher to deserialize.
          * @param encryptionKey The encryption key to use.
          * @return The cipher.
          * @throws EncryptException If fails to decrypt the JSON.
          * @throws JsonSyntaxException If the JSON string is invalid.
          */
         @Throws(EncryptException::class, JsonSyntaxException::class)
-        fun of(cipher: EncryptedCipher, encryptionKey: String): Cipher {
-            return Cipher(
-                id = cipher.id,
-                favorite = cipher.favorite,
-                directory = cipher.directory,
-                data = CipherData.of(cipher.data, encryptionKey),
-                createdAt = cipher.createdAt,
-                updatedAt = cipher.updatedAt
-            )
+        fun of(encCipher: EncryptedCipher, encryptionKey: String): Cipher {
+            return encCipher.toCipher(encryptionKey)
         }
     }
 
@@ -87,14 +80,7 @@ data class Cipher(
      */
     @Throws(EncryptException::class)
     fun toJson(encryptionKey: String): String {
-        val encryptedCipher = EncryptedCipher(
-            id = id,
-            favorite = favorite,
-            directory = directory,
-            data = AesCbc.encrypt(data.toJson(), encryptionKey),
-            createdAt = createdAt,
-            updatedAt = updatedAt
-        )
+        val encryptedCipher = EncryptedCipher.of(this, encryptionKey)
 
         return Gson().toJson(encryptedCipher)
     }
