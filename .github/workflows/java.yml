@@ -24,6 +24,4 @@ jobs:
           cache: maven
 
       - name: Unit Tests
-        run: mvn -s $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml test
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: mvn test

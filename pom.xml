@@ -28,6 +28,10 @@
             <name>Sonatype Snapshot</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <build>
@@ -119,9 +123,9 @@
         </dependency>
 
         <dependency>
-            <groupId>dev.medzik</groupId>
-            <artifactId>libcrypto</artifactId>
-            <version>0.1.0</version>
+            <groupId>com.github.MedzikUser</groupId>
+            <artifactId>libcrypto-java</artifactId>
+            <version>0.1.1</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
