@@ -21,6 +21,7 @@ object IdentityApi {
      * @throws Client.Exception If fails to execute the request on the server.
      */
     @Throws(Exception::class, Client.Exception::class)
+    @JvmStatic
     fun register(email: String, password: String, passwordHint: String?) {
         val passwordHash = Pbkdf2(iterations).sha256(password, email.toByteArray())
         val passwordHashFinal = Pbkdf2(1).sha512(passwordHash, email.toByteArray())
@@ -48,6 +49,7 @@ object IdentityApi {
      * @throws Client.Exception If fails to execute the request on the server.
      */
     @Throws(Exception::class, Client.Exception::class)
+    @JvmStatic
     fun login(email: String, password: String): AuthResponse {
         val passwordHash = Pbkdf2(iterations).sha256(password, email.toByteArray())
         val passwordHashFinal = Pbkdf2(1).sha512(passwordHash, email.toByteArray())
@@ -71,6 +73,7 @@ object IdentityApi {
      * @throws Client.Exception If fails to execute the request on the server.
      */
     @Throws(Exception::class, Client.Exception::class)
+    @JvmStatic
     fun refreshToken(refreshToken: String): AuthResponse {
         val body = HashMap<String, String>()
         body["grant_type"] = "refresh_token"
