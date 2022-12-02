@@ -69,16 +69,10 @@ class Client(private val accessToken: String?) {
 
     data class ErrorResponse(
         @SerializedName("error") val error: String,
-        @SerializedName("error_message") val message: String
+        @SerializedName("error_description") val message: String
     )
 
-    class Exception : kotlin.Exception {
-        private val error: ErrorResponse
-
-        constructor(error: ErrorResponse): super(error.message) {
-            this.error = error
-        }
-
+    class Exception(private val error: ErrorResponse) : kotlin.Exception(error.message) {
         fun getResponseError(): ErrorResponse {
             return error
         }
