@@ -4,7 +4,7 @@ import io.github.serpro69.kfaker.Faker
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
+import org.junit.jupiter.api.Assertions.assertEquals
 
 class IdentityApiTests {
     companion object {

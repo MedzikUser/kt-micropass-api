@@ -2,7 +2,6 @@ package dev.micropass.apiclient
 
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import java.lang.Exception
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
