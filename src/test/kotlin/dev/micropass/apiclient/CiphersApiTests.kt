@@ -19,9 +19,9 @@ class CiphersApiTests {
         @JvmStatic
         @BeforeAll
         fun auth() {
-            IdentityApi().register(email, password, null)
+            IdentityApi.register(email, password, null)
 
-            val res = IdentityApi().login(email, password)
+            val res = IdentityApi.login(email, password)
 
             accessToken = res.accessToken
 
@@ -29,7 +29,7 @@ class CiphersApiTests {
         }
     }
 
-    private val client = CiphersApi.create(encryptionKey, accessToken)
+    private val client = CiphersApi(encryptionKey, accessToken)
 
     private fun createCipher(): Cipher {
         val cipher = Cipher(
@@ -49,7 +49,7 @@ class CiphersApiTests {
             )
         )
 
-        CiphersApi.create(encryptionKey, accessToken).insert(cipher)
+        CiphersApi(encryptionKey, accessToken).insert(cipher)
 
         return cipher
     }

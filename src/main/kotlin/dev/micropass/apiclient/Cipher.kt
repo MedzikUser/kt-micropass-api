@@ -153,23 +153,19 @@ data class Cipher(
     /**
      * The CipherType represents the type of cipher.
      */
-    class CipherType {
-        companion object {
-            const val Login = 1
-            const val SecureNote = 2
-            const val Card = 3
-            const val Identity = 4
-        }
+    object CipherType {
+        const val Login = 1
+        const val SecureNote = 2
+        const val Card = 3
+        const val Identity = 4
     }
 
     /**
      * The FieldType represents the type of field of a cipher.
      */
-    class FieldType {
-        companion object {
-            const val Default = -1
-            const val Text = 0
-            const val Hidden = 1
-        }
+    object FieldType {
+        const val Default = -1
+        const val Text = 0
+        const val Hidden = 1
     }
 }

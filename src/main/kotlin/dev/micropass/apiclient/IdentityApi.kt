@@ -18,8 +18,9 @@ object IdentityApi {
      * @param password The password of the account.
      * @param passwordHint The password hint.
      * @throws Exception If the request fails.
+     * @throws Client.Exception If fails to execute the request on the server.
      */
-    @Throws(Exception::class)
+    @Throws(Exception::class, Client.Exception::class)
     fun register(email: String, password: String, passwordHint: String?) {
         val passwordHash = Pbkdf2(iterations).sha256(password, email.toByteArray())
         val passwordHashFinal = Pbkdf2(1).sha512(passwordHash, email.toByteArray())
@@ -44,8 +45,9 @@ object IdentityApi {
      * @param password The password of the account.
      * @return [AuthResponse] containing the access and refresh token.
      * @throws Exception If the request fails.
+     * @throws Client.Exception If fails to execute the request on the server.
      */
-    @Throws(Exception::class)
+    @Throws(Exception::class, Client.Exception::class)
     fun login(email: String, password: String): AuthResponse {
         val passwordHash = Pbkdf2(iterations).sha256(password, email.toByteArray())
         val passwordHashFinal = Pbkdf2(1).sha512(passwordHash, email.toByteArray())
@@ -66,8 +68,9 @@ object IdentityApi {
      * @param refreshToken The refresh token.
      * @return [AuthResponse] containing the access token.
      * @throws Exception If the request fails.
+     * @throws Client.Exception If fails to execute the request on the server.
      */
-    @Throws(Exception::class)
+    @Throws(Exception::class, Client.Exception::class)
     fun refreshToken(refreshToken: String): AuthResponse {
         val body = HashMap<String, String>()
         body["grant_type"] = "refresh_token"

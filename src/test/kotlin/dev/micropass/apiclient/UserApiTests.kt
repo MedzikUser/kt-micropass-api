@@ -21,13 +21,13 @@ class UserApiTests {
         @JvmStatic
         @BeforeAll
         fun register() {
-            IdentityApi().register(email, password, null)
+            IdentityApi.register(email, password, null)
         }
     }
 
     @BeforeEach
     fun auth() {
-        val res = IdentityApi().login(email, password)
+        val res = IdentityApi.login(email, password)
 
         accessToken = res.accessToken
         refreshToken = res.refreshToken!!
