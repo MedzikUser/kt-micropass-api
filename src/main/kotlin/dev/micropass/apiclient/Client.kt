@@ -8,9 +8,7 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
-class Client(private val accessToken: String?) {
-    private val apiURL = "https://micropass-api.medzik.xyz"
-
+class Client(private val accessToken: String?, private val apiURL: String = "https://micropass-api.medzik.xyz") {
     private val client = HttpClient.newBuilder().build()
 
     @Throws(Exception::class, Exception::class)
@@ -67,12 +65,23 @@ class Client(private val accessToken: String?) {
         return resBody
     }
 
+    /**
+     * Error response returned by the API
+     */
     data class ErrorResponse(
         @SerializedName("error") val error: String,
         @SerializedName("error_description") val message: String
     )
 
+    /**
+     * Exception thrown when an error occurs while communicating with the API.
+     * @param error The error object returned by the API.
+     */
     class Exception(private val error: ErrorResponse) : kotlin.Exception(error.message) {
+        /**
+         * The error response returned by the API.
+         * @return [ErrorResponse] - The error response returned by the API.
+         */
         fun getResponseError(): ErrorResponse {
             return error
         }
