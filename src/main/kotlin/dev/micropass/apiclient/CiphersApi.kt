@@ -2,6 +2,9 @@ package dev.micropass.apiclient
 
 import com.google.gson.Gson
 
+/**
+ * CiphersApi - a collection of methods to interact with the Ciphers API
+ */
 class CiphersApi(private val encryptionKey: String, val client: Client) {
     companion object {
         fun create(encryptionKey: String, accessToken: String): CiphersApi {

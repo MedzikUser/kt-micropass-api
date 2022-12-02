@@ -7,27 +7,23 @@ import org.junit.jupiter.api.Test
 
 class IdentityApiTests {
     companion object {
-        @JvmStatic
         private val email = "_demo_" + Faker().internet.email()
-        @JvmStatic
         private val password = Faker().random.randomString(10)
 
-        @JvmStatic
         lateinit var accessToken: String
-        @JvmStatic
         lateinit var refreshToken: String
 
         @JvmStatic
         @BeforeAll
         fun register() {
-            IdentityApi().register(email, password, null)
+            IdentityApi.register(email, password, null)
         }
     }
 
     @Test
     @BeforeEach
     fun auth() {
-        val res = IdentityApi().login(email, password)
+        val res = IdentityApi.login(email, password)
 
         accessToken = res.accessToken
         refreshToken = res.refreshToken!!
@@ -35,6 +31,6 @@ class IdentityApiTests {
 
     @Test
     fun refreshToken() {
-        IdentityApi().refreshToken(refreshToken)
+        IdentityApi.refreshToken(refreshToken)
     }
 }

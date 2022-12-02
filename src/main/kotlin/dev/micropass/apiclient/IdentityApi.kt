@@ -5,10 +5,12 @@ import dev.medzik.libcrypto.AesCbc
 import dev.medzik.libcrypto.Pbkdf2
 import dev.medzik.libcrypto.Salt
 
-class IdentityApi {
+/**
+ * IdentityApi is a class that provides methods for interacting with the identity API.
+ */
+object IdentityApi {
     private val client = Client(null)
-
-    private val iterations = 100000
+    private const val iterations = 100000
 
     /**
      * Create a new account.
